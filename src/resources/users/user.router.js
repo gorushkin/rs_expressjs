@@ -1,4 +1,5 @@
 import express from 'express';
+import { deleteUser } from './user.memory.repository.js';
 import User from './user.model.js';
 import * as usersService from './user.service.js';
 
@@ -18,6 +19,25 @@ router.route('/').post(async (req, res) => {
   } catch (error) {
     res.json({ message: error.message });
   }
+});
+
+router.route('/:id').get(async (req, res) => {
+  const { id } = req.params;
+  const user = await usersService.getUser(id);
+  res.json(User.toResponse(user));
+});
+
+router.route('/:id').put(async (req, res) => {
+  const { name, login, password } = req.body;
+  const { id } = req.params;
+  await usersService.updateUser(id, { name, login, password });
+  res.json({ user: 'qwe' });
+});
+
+router.route('/:id').delete(async (req, res) => {
+  const { id } = req.params;
+  await deleteUser(id);
+  res.json({ user: 'qwe' });
 });
 
 export default router;
