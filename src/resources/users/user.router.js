@@ -1,5 +1,4 @@
 import express from 'express';
-import { deleteUser } from './user.memory.repository.js';
 import User from './user.model.js';
 import * as usersService from './user.service.js';
 
@@ -36,7 +35,7 @@ router.route('/:id').put(async (req, res) => {
 
 router.route('/:id').delete(async (req, res) => {
   const { id } = req.params;
-  await deleteUser(id);
+  await usersService.deleteUser(id);
   res.json({ user: 'qwe' });
 });
 
