@@ -12,4 +12,13 @@ const writeData = async (field) => {
   await fs.promises.writeFile(pathToData, updatedData, 'utf-8');
 };
 
-export { readData, writeData };
+const errorHandler = async (cb, ...data) => {
+  try {
+    const response = (await cb(...data)) || { message: 'ok!!!' };
+    return response;
+  } catch (error) {
+    return { message: error.message };
+  }
+};
+
+export { readData, writeData, errorHandler };

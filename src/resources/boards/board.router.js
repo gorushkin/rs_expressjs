@@ -1,17 +1,9 @@
 import express from 'express';
 import Board from './board.model.js';
 import * as boardsService from './board.service.js';
+import { errorHandler } from '../../common/helpers.js';
 
 const router = express.Router();
-
-const errorHandler = async (cb, ...data) => {
-  try {
-    const response = (await cb(...data)) || { message: 'ok!!!' };
-    return response;
-  } catch (error) {
-    return { message: error.message };
-  }
-};
 
 router.route('/').get(async (req, res) => {
   const response = await errorHandler(boardsService.getAll);

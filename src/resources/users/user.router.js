@@ -1,29 +1,26 @@
 import express from 'express';
 import User from './user.model.js';
 import * as usersService from './user.service.js';
+import { errorHandler } from '../../common/helpers.js';
 
 const router = express.Router();
 
 router.route('/').get(async (req, res) => {
-  const users = await usersService.getAll('users');
-  res.json(users.map(User.toResponse));
+  const response = await errorHandler(usersService.getAll);
+  res.json(response);
 });
 
 router.route('/').post(async (req, res) => {
   const { name, login, password } = req.body;
   const user = new User({ name, login, password });
-  try {
-    await usersService.addUser(user);
-    res.json(User.toResponse(user));
-  } catch (error) {
-    res.json({ message: error.message });
-  }
+  const response = await errorHandler(usersService.addUser, user);
+  res.json(response);
 });
 
 router.route('/:id').get(async (req, res) => {
   const { id } = req.params;
-  const user = await usersService.getUser(id);
-  res.json(User.toResponse(user));
+  const response = await errorHandler(usersService.getUser, id);
+  res.json((User.toResponse(response)));
 });
 
 router.route('/:id').put(async (req, res) => {

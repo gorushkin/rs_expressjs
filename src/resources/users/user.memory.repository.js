@@ -8,7 +8,7 @@ const addUser = async (user) => {
   const { users } = await readData();
   const updatedUsers = [...users, user];
   writeData({ users: updatedUsers });
-  return { data: 'qweu' };
+  return user;
 };
 
 const getUser = async (id) => {
