@@ -14,20 +14,20 @@ router.route('/').post(async (req, res) => {
   const { name, login, password } = req.body;
   const user = new User({ name, login, password });
   const response = await errorHandler(usersService.addUser, user);
-  res.json(response);
+  res.status(201).json(User.toResponse(response));
 });
 
 router.route('/:id').get(async (req, res) => {
   const { id } = req.params;
   const response = await errorHandler(usersService.getUser, id);
-  res.json((User.toResponse(response)));
+  res.status(200).json((User.toResponse(response)));
 });
 
 router.route('/:id').put(async (req, res) => {
   const { name, login, password } = req.body;
   const { id } = req.params;
   await usersService.updateUser(id, { name, login, password });
-  res.json({ user: 'qwe' });
+  res.status(200).json({ user: 'qwe' });
 });
 
 router.route('/:id').delete(async (req, res) => {

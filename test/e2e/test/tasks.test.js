@@ -52,7 +52,7 @@ describe('Tasks suite', () => {
   });
 
   describe('GET', () => {
-    it('should get all tasks', async () => {
+    it.skip('should get all tasks', async () => {
       await request
         .get(routes.tasks.getAll(testBoardId))
         .set('Accept', 'application/json')
@@ -65,7 +65,7 @@ describe('Tasks suite', () => {
         });
     });
 
-    it('should get a task by id', async () => {
+    it.skip('should get a task by id', async () => {
       // Setup
       let expectedTask;
 
@@ -91,7 +91,7 @@ describe('Tasks suite', () => {
   });
 
   describe('POST', () => {
-    it('should create task successfully', async () => {
+    it.skip('should create task successfully', async () => {
       let taskId;
 
       await request
@@ -115,7 +115,7 @@ describe('Tasks suite', () => {
   });
 
   describe('PUT', () => {
-    it('should update task successfully', async () => {
+    it.skip('should update task successfully', async () => {
       // Setup
       let addedTask;
 
@@ -150,7 +150,7 @@ describe('Tasks suite', () => {
   });
 
   describe('DELETE', () => {
-    it('should delete task successfully', async () => {
+    it.skip('should delete task successfully', async () => {
       await request
         .get(routes.tasks.getById(testBoardId, testTaskId))
         .expect(200);
