@@ -26,6 +26,7 @@ const updateUser = async (id, data) => {
     item.id === id ? updatedUser : item
   );
   writeData({ users: updatedUsers });
+  return updatedUser;
 };
 
 const deleteUser = async (id) => {
