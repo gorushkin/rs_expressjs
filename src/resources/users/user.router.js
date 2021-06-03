@@ -1,44 +1,66 @@
-import express from 'express';
+/* eslint-disable no-unused-vars */
+import { Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import User from './user.model.js';
 import * as usersService from './user.service.js';
 import { errorHandler } from '../../common/helpers.js';
 
-const router = express.Router();
+const router = Router();
 
-router.route('/').get(async (req, res) => {
-  const response = await errorHandler(usersService.getAll);
-  res.json(response);
+const catchAsync = (fn) => (req, res, next) => {
+  fn(req, res, next).catch(next);
+};
+
+const getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await usersService.getAll();
+  res.status(StatusCodes.OK).json(users.map(User.toResponse));
 });
 
-router.route('/').post(async (req, res) => {
-  const { name, login, password } = req.body;
-  const user = new User({ name, login, password });
-  const response = await errorHandler(usersService.addUser, user);
-  res.status(201).json(User.toResponse(response));
-});
+const createUser = async (req, res, next) => {
+  const data = req.body;
+  try {
+    const user = usersService.addUser(data);
+    res.status(StatusCodes.OK).json(User.toResponse(user));
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').get(async (req, res) => {
+const getUser = async (req, res, next) => {
   const { id } = req.params;
-  const response = await errorHandler(usersService.getUser, id);
-  res.status(200).json(User.toResponse(response));
-});
+  try {
+    const user = await usersService.getUser(id);
+    res.status(StatusCodes.OK).json(User.toResponse(user));
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').put(async (req, res) => {
-  const { name, login, password } = req.body;
+const updateUser = async (req, res, next) => {
+  const data = req.body;
   const { id } = req.params;
-  await usersService.updateUser(id, { name, login, password });
-  const response = await errorHandler(usersService.updateUser, id, {
-    name,
-    login,
-    password,
-  });
-  res.status(200).json(response);
-});
+  try {
+    const user = await usersService.updateUser(id, data);
+    res.status(StatusCodes.OK).json(User.toResponse(user));
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').delete(async (req, res) => {
+const deleteUser = async (req, res, next) => {
   const { id } = req.params;
-  const response = await errorHandler(usersService.deleteUser, id);
-  res.json(response);
-});
+  try {
+    await usersService.deleteUser(id);
+    res.status(StatusCodes.OK).json({ message: 'User was deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get('/', getAllUsers);
+router.post('/', createUser);
+router.get('/:id', getUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
 
 export default router;

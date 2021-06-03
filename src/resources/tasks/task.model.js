@@ -12,7 +12,7 @@ class Task {
     this.title = title;
     this.description = description;
     this.userId = userId;
-    this.boarId = boardId;
+    this.boardId = boardId;
   }
 }
 

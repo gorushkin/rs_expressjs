@@ -3,7 +3,8 @@ import Task from './task.model.js';
 import * as tasksService from './task.service.js';
 import { errorHandler } from '../../common/helpers.js';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+// позволяет брать params из прдыдущих роутов
 
 const getBoardId = (req) =>
   req.baseUrl.split('/').filter((item) => !!item.trim())[1];

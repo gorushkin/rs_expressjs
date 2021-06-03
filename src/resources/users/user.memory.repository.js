@@ -1,10 +1,12 @@
 import { writeData, readData } from '../../common/helpers.js';
+import User from './user.model.js';
 
 const getData = async (fieldName) => (await readData())[fieldName];
 
 const getAll = async () => getData('users');
 
-const addUser = async (user) => {
+const addUser = async (data) => {
+  const user = new User(data);
   const { users } = await readData();
   const updatedUsers = [...users, user];
   writeData({ users: updatedUsers });
@@ -13,20 +15,17 @@ const addUser = async (user) => {
 
 const getUser = async (id) => {
   const { users } = await readData();
-  const index = users.findIndex((item) => item.id === id);
-  return users[index];
+  const user = users.find((item) => item.id === id);
+  return user;
 };
 
-const updateUser = async (id, data) => {
+const updateUser = async (id, user) => {
   const users = await getAll();
-  const index = users.findIndex((item) => item.id === id);
-  const user = users[index];
-  const updatedUser = { ...user, ...data };
   const updatedUsers = users.map((item) =>
-    item.id === id ? updatedUser : item
+    item.id === id ? user : item
   );
   writeData({ users: updatedUsers });
-  return updatedUser;
+  return user;
 };
 
 const deleteUser = async (id) => {
