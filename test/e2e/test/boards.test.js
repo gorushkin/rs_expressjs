@@ -35,7 +35,7 @@ describe('Boards suite', () => {
   });
 
   describe('GET', () => {
-    it('should get all boards', async () => {
+    it.skip('should get all boards', async () => {
       await request
         .get(routes.boards.getAll)
         .set('Accept', 'application/json')
@@ -48,7 +48,7 @@ describe('Boards suite', () => {
         });
     });
 
-    it('should get a board by id', async () => {
+    it.skip('should get a board by id', async () => {
       // Setup
       let expectedBoard;
 
@@ -77,7 +77,7 @@ describe('Boards suite', () => {
   });
 
   describe('POST', () => {
-    it('should create board successfully', async () => {
+    it.skip('should create board successfully', async () => {
       let boardId;
 
       await request
@@ -98,7 +98,7 @@ describe('Boards suite', () => {
   });
 
   describe('PUT', () => {
-    it('should update board successfully', async () => {
+    it.skip('should update board successfully', async () => {
       // Setup
       let boardToUpdate;
 
@@ -136,7 +136,7 @@ describe('Boards suite', () => {
   });
 
   describe('DELETE', () => {
-    it('should delete board successfully', async () => {
+    it.skip('should delete board successfully', async () => {
       // Setup:
       let boardId;
 
@@ -156,7 +156,7 @@ describe('Boards suite', () => {
       await request.get(routes.boards.getById(boardId)).expect(404);
     });
 
-    it("should delete board's tasks upon deletion", async () => {
+    it.skip("should delete board's tasks upon deletion", async () => {
       // Setup:
       const res = await request
         .post(routes.boards.create)
