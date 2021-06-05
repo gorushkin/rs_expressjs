@@ -9,7 +9,7 @@ const addBoard = async (data) => {
   const board = new Board(data);
   const { boards } = await readData();
   const updatedBoards = [...boards, board];
-  writeData({ users: updatedBoards });
+  writeData({ boards: updatedBoards });
   return board;
 };
 
@@ -26,17 +26,6 @@ const getBoard = async (id) => {
   const index = boards.findIndex((item) => item.id === id);
   return boards[index];
 };
-
-// const updateBoard = async (id, data) => {
-//   const boards = await getAll();
-//   const index = boards.findIndex((item) => item.id === id);
-//   const board = boards[index];
-//   const updatedBoard = { ...board, ...data };
-//   const updatedBoards = boards.map((item) =>
-//     item.id === id ? updatedBoard : item
-//   );
-//   writeData({ boards: updatedBoards });
-// };
 
 const deleteBoard = async (id) => {
   const boards = await getAll();
