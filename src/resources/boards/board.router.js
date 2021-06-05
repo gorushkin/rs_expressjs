@@ -1,39 +1,61 @@
-import express from 'express';
-import Board from './board.model.js';
+/* eslint-disable no-unused-vars */
+import { Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import * as boardsService from './board.service.js';
 import { errorHandler } from '../../common/helpers.js';
 
-const router = express.Router();
+const router = Router();
 
-router.route('/').get(async (req, res) => {
-  const response = await errorHandler(boardsService.getAll);
-  res.json(response);
-});
+const getAll = async (req, res) => {
+  const boards = await boardsService.getAll();
+  res.json(boards);
+};
 
-router.route('/').post(async (req, res) => {
+const createBoard = async (req, res, next) => {
   const { title } = req.body;
-  const board = new Board({ title });
-  const response = await errorHandler(boardsService.addBoard, board);
-  res.json(response);
-});
+  try {
+    const board = boardsService.addBoard(title);
+    res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').get(async (req, res) => {
+const getBoard = async (req, res, next) => {
   const { id } = req.params;
-  const response = await errorHandler(boardsService.getBoard, id);
-  res.json(response);
-});
+  try {
+    const board = await boardsService.getBoard(id);
+    res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').put(async (req, res) => {
-  const { title } = req.body;
+const updateBoard = async (req, res, next) => {
+  const data = req.body;
   const { id } = req.params;
-  const response = await errorHandler(boardsService.updateBoard, id, { title });
-  res.json(response);
-});
+  try {
+    const board = await boardsService.updateBoard(id, data);
+    res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    next(error);
+  }
+};
 
-router.route('/:id').delete(async (req, res) => {
+const deleteBoard = async (req, res, next) => {
   const { id } = req.params;
-  const response = await errorHandler(boardsService.deleteBoard, id);
-  res.json(response);
-});
+  try {
+    await boardsService.deleteBoard(id);
+    res.status(StatusCodes.OK).json({ message: 'Board was deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get('/', getAll);
+router.post('/', createBoard);
+router.get('/:id', getBoard);
+router.put('/:id', updateBoard);
+router.delete('/:id', deleteBoard);
 
 export default router;
