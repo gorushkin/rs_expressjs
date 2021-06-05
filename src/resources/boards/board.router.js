@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { Router } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import express from 'express';
+import httpStatusCodes from 'http-status-codes';
 import * as boardsService from './board.service.js';
 import { errorHandler } from '../../common/helpers.js';
 
-const router = Router();
+const router = express.Router();
+const { StatusCodes } = httpStatusCodes;
 
 const getAll = async (req, res) => {
   const boards = await boardsService.getAll();
@@ -13,8 +14,9 @@ const getAll = async (req, res) => {
 
 const createBoard = async (req, res, next) => {
   const { title } = req.body;
+  const data = { title };
   try {
-    const board = boardsService.addBoard(title);
+    const board = boardsService.addBoard(data);
     res.status(StatusCodes.OK).json(board);
   } catch (error) {
     next(error);
@@ -32,7 +34,9 @@ const getBoard = async (req, res, next) => {
 };
 
 const updateBoard = async (req, res, next) => {
-  const data = req.body;
+  // const data = req.body;
+  const { title } = req.body;
+  const data = { title };
   const { id } = req.params;
   try {
     const board = await boardsService.updateBoard(id, data);

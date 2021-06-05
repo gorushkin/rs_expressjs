@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Router } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import express  from 'express';
+import httpStatusCodes from 'http-status-codes';
 import User from './user.model.js';
 import * as usersService from './user.service.js';
 import { errorHandler } from '../../common/helpers.js';
 
-const router = Router();
+const router = express.Router();
+const {StatusCodes} = httpStatusCodes;
 
 const catchAsync = (fn) => (req, res, next) => {
   fn(req, res, next).catch(next);

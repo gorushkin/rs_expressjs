@@ -1,4 +1,5 @@
 import { writeData, readData } from '../../common/helpers.js';
+import Task from './task.model.js';
 
 const getData = async (fieldName) => (await readData())[fieldName];
 
@@ -8,15 +9,13 @@ const getAll = async (boardId) => {
   return tasks;
 };
 
-const addTask = async (task) => {
-  const { tasks, boards } = await readData();
-  const { boarId } = task;
-  const isBoardIdIsCorrect = boards.findIndex((item) => item.id === boarId);
-  if (isBoardIdIsCorrect < 0) {
-    throw new Error('board id is incorrect!!!');
-  }
+const addTask = async (data) => {
+  const { tasks } = await readData();
+  const task = new Task(data);
   const updatedTasks = [...tasks, task];
-  writeData({ tasks: updatedTasks });
+  writeData({
+    tasks: updatedTasks,
+  });
   return task;
 };
 
@@ -36,17 +35,24 @@ const updateTask = async (id, data) => {
     throw new Error('Task ID is not correct!!!');
   }
   const task = tasks[index];
-  const updatedTask = { ...task, ...data };
+  const updatedTask = {
+    ...task,
+    ...data,
+  };
   const updatedTasks = tasks.map((item) =>
     item.id === id ? updatedTask : item
   );
-  writeData({ tasks: updatedTasks });
+  writeData({
+    tasks: updatedTasks,
+  });
 };
 
 const deleteTask = async (id) => {
   const { tasks } = await readData();
   const updatedTasks = tasks.filter((item) => item.id !== id);
-  writeData({ tasks: updatedTasks });
+  writeData({
+    tasks: updatedTasks,
+  });
   return updatedTasks;
 };
 
