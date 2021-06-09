@@ -1,18 +1,20 @@
-/* eslint-disable no-unused-vars */
 import express from 'express';
 import httpStatusCodes from 'http-status-codes';
-import Task from './task.model.js';
 import * as tasksService from './task.service.js';
-import { errorHandler } from '../../common/helpers.js';
+// import { errorHandler } from '../../common/helpers.js';
 
+// позволяет брать params из прдыдущих роутов
 const router = express.Router({ mergeParams: true });
 const { StatusCodes } = httpStatusCodes;
-// позволяет брать params из прдыдущих роутов
 
 const getAll = async (req, res, next) => {
   const { boardId } = req.params;
-  const tasks = await tasksService.getAll(boardId);
-  res.status(StatusCodes.OK).json(tasks);
+  try {
+    const tasks = await tasksService.getAll(boardId);
+    res.status(StatusCodes.OK).json(tasks);
+  } catch (error) {
+    next(error);
+  }
 };
 
 const createTask = async (req, res, next) => {
@@ -26,31 +28,42 @@ const createTask = async (req, res, next) => {
   }
 };
 
+const getTask = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const task = await tasksService.getTask(id);
+    res.status(StatusCodes.OK).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateTask = async (req, res, next) => {
+  const { title, description, userId, boardId } = req.body;
+  const data = { title, description, userId, boardId };
+  const { id } = req.params;
+  try {
+    const task = await tasksService.updateTask(id, data);
+    res.status(StatusCodes.OK).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteTask = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await tasksService.deleteTask(id);
+    res.status(StatusCodes.OK).json({ message: 'Task was deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get('/', getAll);
 router.post('/', createTask);
-
-const getBoardId = (req) =>
-  req.baseUrl.split('/').filter((item) => !!item.trim())[1];
-
-router.route('/:id').get(async (req, res) => {
-  const { id } = req.params;
-  const response = await errorHandler(tasksService.getTask, id);
-  res.json(response);
-});
-
-router.route('/:id').put(async (req, res) => {
-  const { id } = req.params;
-  const { order, ...data } = req.body;
-  const response = await errorHandler(tasksService.updateTask, id, {
-    ...data,
-  });
-  res.json(response);
-});
-
-router.route('/:id').delete(async (req, res) => {
-  const { id } = req.params;
-  const response = await errorHandler(tasksService.deleteTask, id);
-  res.json(response);
-});
+router.get('/:id', getTask);
+router.put('/:id', updateTask);
+router.delete('/:id', deleteTask);
 
 export default router;

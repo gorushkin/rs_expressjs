@@ -21,39 +21,22 @@ const addTask = async (data) => {
 
 const getTask = async (id) => {
   const { tasks } = await readData();
-  const index = tasks.findIndex((item) => item.id === id);
-  if (index < 0) {
-    throw new Error('Task ID is not correct!!!');
-  }
-  return tasks[index];
+  const task = tasks.find((item) => item.id === id);
+  return task;
 };
 
-const updateTask = async (id, data) => {
+const updateTask = async (id, task) => {
   const { tasks } = await readData();
-  const index = tasks.findIndex((item) => item.id === id);
-  if (index < 0) {
-    throw new Error('Task ID is not correct!!!');
-  }
-  const task = tasks[index];
-  const updatedTask = {
-    ...task,
-    ...data,
-  };
-  const updatedTasks = tasks.map((item) =>
-    item.id === id ? updatedTask : item
-  );
-  writeData({
-    tasks: updatedTasks,
-  });
+  const updatedTasks = tasks.map((item) => (item.id === id ? task : item));
+  writeData({ tasks: updatedTasks });
+  return task;
 };
 
 const deleteTask = async (id) => {
   const { tasks } = await readData();
   const updatedTasks = tasks.filter((item) => item.id !== id);
-  writeData({
-    tasks: updatedTasks,
-  });
-  return updatedTasks;
+  writeData({ tasks: updatedTasks });
+  return tasks;
 };
 
 export { getAll, addTask, getTask, updateTask, deleteTask };
