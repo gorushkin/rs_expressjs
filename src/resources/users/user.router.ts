@@ -1,57 +1,60 @@
 /* eslint-disable no-unused-vars */
-import express  from 'express';
-import httpStatusCodes from 'http-status-codes';
-import User from './user.model.js';
+import express, { RequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import User from './user.model';
 import * as usersService from './user.service.js';
-import { errorHandler } from '../../common/helpers.js';
+// import { errorHandler } from '../../common/helpers.js';
 
 const router = express.Router();
-const {StatusCodes} = httpStatusCodes;
 
-const catchAsync = (fn) => (req, res, next) => {
-  fn(req, res, next).catch(next);
-};
+// const catchAsync = (fn) => (req, res, next) => {
+//   fn(req, res, next).catch(next);
+// };
 
-const getAllUsers = catchAsync(async (req, res, next) => {
+const getAllUsers: RequestHandler = async (_req, res, next) => {
   const users = await usersService.getAll();
-  res.status(StatusCodes.OK).json(users.map(User.toResponse));
-});
+  try {
+    res.status(StatusCodes.OK).json(users.map(User.toResponse));
+  } catch (error) {
+    next(error);
+  }
+};
 
-const createUser = async (req, res, next) => {
+const createUser: RequestHandler = async (req, res, next) => {
   const data = req.body;
   try {
-    const user = usersService.addUser(data);
+    const user = await usersService.addUser(data);
     res.status(StatusCodes.OK).json(User.toResponse(user));
   } catch (error) {
     next(error);
   }
 };
 
-const getUser = async (req, res, next) => {
+const getUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await usersService.getUser(id);
+    const user = await usersService.getUser(String(id));
     res.status(StatusCodes.OK).json(User.toResponse(user));
   } catch (error) {
     next(error);
   }
 };
 
-const updateUser = async (req, res, next) => {
+const updateUser: RequestHandler = async (req, res, next) => {
   const data = req.body;
   const { id } = req.params;
   try {
-    const user = await usersService.updateUser(id, data);
+    const user = await usersService.updateUser(String(id), data);
     res.status(StatusCodes.OK).json(User.toResponse(user));
   } catch (error) {
     next(error);
   }
 };
 
-const deleteUser = async (req, res, next) => {
+const deleteUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
-    await usersService.deleteUser(id);
+    await usersService.deleteUser(String(id));
     res.status(StatusCodes.OK).json({ message: 'User was deleted' });
   } catch (error) {
     next(error);
