@@ -1,6 +1,6 @@
 import express from 'express';
 import swaggerUI from 'swagger-ui-express';
-import path from 'path';
+import * as path from 'path';
 import YAML from 'yamljs';
 import { fileURLToPath } from 'url';
 import userRouter from './resources/users/user.router.js';
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 app.use('/', (req, res, next) => {
   if (req.originalUrl === '/') {
     res.send('Service is running!');
-    return;
+    return;h
   }
   next();
 });
