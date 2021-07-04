@@ -19,9 +19,11 @@ const getUser = async (id: string) => {
   return user;
 };
 
-const updateUser = async (id: String, user: User) => {
+const updateUser = async (id: string, user: User) => {
   const users = await getAll();
-  const updatedUsers = users.map((item: User) => (item.id === id ? user : item));
+  const updatedUsers = users.map((item: User) =>
+    item.id === id ? user : item
+  );
   writeData({ users: updatedUsers });
   return user;
 };

@@ -23,7 +23,6 @@
   },
   "extends": [
     "plugin:node/recommended",
-    "airbnb-typescript/base",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],

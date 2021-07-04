@@ -1,17 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export interface IUser {
-  id: String;
-  name: String;
-  login: String;
-  password: String;
+  id: string;
+  name: string;
+  login: string;
+  password: string;
 }
 
 class User {
-  public id: String;
-  public name: String;
-  public login: String;
-  public password: String;
+  public id: string;
+  public name: string;
+  public login: string;
+  public password: string;
 
   constructor({
     id = uuidv4(),
